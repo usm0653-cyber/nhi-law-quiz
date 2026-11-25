@@ -91,189 +91,73 @@ details>.inner{display:flex;flex-direction:column;gap:10px;padding-top:8px}
 @media (prefers-reduced-motion:no-preference){.bar>i{transition:width .25s}}
 </style>
 
+<style>
+[hidden]{display:none!important}
+.chrow{display:flex;align-items:center;gap:12px;width:100%;min-height:56px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);text-align:left}
+.chrow[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.chrow[disabled]{opacity:.5;cursor:default}
+.ck{flex:none;width:22px;height:22px;border:2px solid var(--line);border-radius:6px;display:grid;place-items:center;font-size:14px;font-weight:700;color:var(--accent-ink)}
+.chrow[aria-pressed="true"] .ck{background:var(--accent);border-color:var(--accent)}
+.chrow .grow{flex:1;min-width:0}
+.chrow .sub{font-size:.82rem;color:var(--muted)}
+.chlist{display:flex;flex-direction:column;gap:8px}
+.lite{display:flex;flex-direction:column;gap:10px}
+</style>
 </head>
 <body>
 <div id="app"></div>
 <div class="dock" id="dock" hidden><div id="dockInner"></div></div>
-
+<script src="data1.js"></script>
+<script src="data.js"></script>
 <script>
-/* ===== 문제 데이터 (기준: 제21522호 + 시행예정 2027.1.1. 반영본) ===== */
-var Q = [
-{id:"c1-01",art:"제1조",type:"choice",amend:false,
- stem:"「국민건강보험법」 제1조(목적)에 관한 설명으로 옳은 것은?",
- opts:["질병·부상의 치료와 출산에 대하여만 보험급여를 실시함으로써 국민보건 향상에 이바지함을 목적으로 한다.",
-       "질병·부상에 대한 예방·진단·치료·재활과 출산·사망 및 건강증진에 대하여 보험급여를 실시함으로써 의료기관의 경영 안정과 의료산업 발전에 이바지함을 목적으로 한다.",
-       "질병·부상에 대한 예방·진단·치료·재활과 출산·사망 및 건강증진에 대하여 보험급여를 실시함으로써 국민보건 향상과 사회보장 증진에 이바지함을 목적으로 한다.",
-       "보험료를 부과·징수하여 건강보험 재정의 건전성을 확보함으로써 사회보장 증진에 이바지함을 목적으로 한다."],
- ans:2,
- notes:[{l:"①",ok:false,t:"급여 대상이 치료·출산으로 줄어 있습니다. 예방·진단·재활·사망·건강증진이 빠졌습니다."},
-        {l:"②",ok:false,t:"이바지 대상이 틀립니다. 의료기관 경영이나 의료산업 발전은 목적 규정에 없습니다."},
-        {l:"③",ok:true,t:"제1조 원문과 같습니다."},
-        {l:"④",ok:false,t:"재정 건전성 확보는 목적 규정에 없습니다. 목적은 ‘보험급여 실시’입니다."}],
- src:"제1조(목적) 이 법은 국민의 질병ㆍ부상에 대한 예방ㆍ진단ㆍ치료ㆍ재활과 출산ㆍ사망 및 건강증진에 대하여 보험급여를 실시함으로써 국민보건 향상과 사회보장 증진에 이바지함을 목적으로 한다.",
- trap:[{g:"범위 바꾸기",t:"급여 대상(예방·진단·치료·재활·출산·사망·건강증진)을 줄이거나 목적어를 바꾸는 유형입니다. 나열 항목은 7개를 통째로 외워 두세요."}]},
-
-{id:"c1-02",art:"제2조",type:"ox",amend:false,
- stem:"이 법에 따른 건강보험사업은 국민건강보험공단이 맡아 주관한다.",
- opts:["O","X"],ans:1,
- notes:[{l:"",ok:false,t:"건강보험사업은 보건복지부장관이 맡아 주관합니다. 공단은 보험자로서 사업을 수행하는 기관입니다."}],
- src:"제2조(관장) 이 법에 따른 건강보험사업은 보건복지부장관이 맡아 주관한다.",
- trap:[{g:"주체 바꾸기",t:"주관(관장)은 보건복지부장관, 보험자는 공단입니다. 주체를 바꿔 내는 대표 유형입니다."}]},
-
-{id:"c1-03",art:"제3조",type:"box",amend:false,
- stem:"「국민건강보험법」 제3조(정의)에 관한 설명으로 옳은 것만을 모두 고르면?",
- box:[{k:"ㄱ",t:"“근로자”에는 법인의 이사와 그 밖의 임원이 포함된다."},
-      {k:"ㄴ",t:"“근로자”에는 공무원 및 교직원이 포함된다."},
-      {k:"ㄷ",t:"“사업장”이란 사업소나 사무소를 말한다."},
-      {k:"ㄹ",t:"“공무원”이란 국가에서 상시 공무에 종사하는 사람을 말하며, 지방자치단체에서 근무하는 사람은 제외한다."}],
- opts:["ㄱ, ㄷ","ㄴ, ㄷ","ㄱ, ㄴ","ㄴ, ㄹ"],ans:0,
- notes:[{l:"ㄱ",ok:true,t:"법인의 이사와 그 밖의 임원도 근로자에 포함됩니다."},
-        {l:"ㄴ",ok:false,t:"근로자는 공무원 및 교직원을 제외한 사람입니다."},
-        {l:"ㄷ",ok:true,t:"사업소나 사무소를 말합니다."},
-        {l:"ㄹ",ok:false,t:"공무원은 국가나 지방자치단체에서 상시 공무에 종사하는 사람입니다. 지방자치단체도 포함됩니다."}],
- src:"1. “근로자”란 직업의 종류와 관계없이 근로의 대가로 보수를 받아 생활하는 사람(법인의 이사와 그 밖의 임원을 포함한다)으로서 공무원 및 교직원을 제외한 사람을 말한다.\n3. “사업장”이란 사업소나 사무소를 말한다.\n4. “공무원”이란 국가나 지방자치단체에서 상시 공무에 종사하는 사람을 말한다.",
- trap:[{g:"예외·단서",t:"‘공무원 및 교직원을 제외한’이라는 단서를 빼거나 뒤집어 포함시키는 유형입니다."},
-       {g:"범위 바꾸기",t:"‘국가나 지방자치단체’에서 한쪽을 빼서 범위를 좁히는 유형입니다."}]},
-
-{id:"c1-04",art:"제3조",type:"choice",amend:false,
- stem:"「국민건강보험법」 제3조(정의)에서 “사용자”에 해당하지 않는 것은?",
- opts:["근로자가 소속되어 있는 사업장의 사업주",
-       "공무원이 소속되어 있는 기관의 장으로서 대통령령으로 정하는 사람",
-       "교직원이 소속되어 있는 사립학교를 설립·운영하는 자",
-       "교직원이 소속되어 있는 사립학교의 교장"],
- ans:3,
- notes:[{l:"①",ok:true,t:"사용자 가목입니다."},
-        {l:"②",ok:true,t:"사용자 나목입니다. ‘대통령령’으로 정합니다."},
-        {l:"③",ok:true,t:"사용자 다목입니다. 학교를 ‘설립·운영하는 자’입니다."},
-        {l:"④",ok:false,t:"사립학교의 교장은 목록에 없습니다. 교직원은 오히려 가입자(직장가입자) 쪽입니다."}],
- src:"2. “사용자”란 다음 각 목의 어느 하나에 해당하는 자를 말한다.\n  가. 근로자가 소속되어 있는 사업장의 사업주\n  나. 공무원이 소속되어 있는 기관의 장으로서 대통령령으로 정하는 사람\n  다. 교직원이 소속되어 있는 사립학교(…)를 설립ㆍ운영하는 자",
- trap:[{g:"주체 바꾸기",t:"사용자 3유형(사업주 / 기관의 장 / 학교 설립·운영자)과 비슷하지만 목록에 없는 사람을 끼워 넣는 유형입니다."}]},
-
-{id:"c1-05",art:"제3조의2",type:"blank",amend:false,
- stem:"보건복지부장관은 이 법에 따른 건강보험의 건전한 운영을 위하여 건강보험정책심의위원회의 심의를 거쳐 (    )년마다 국민건강보험종합계획을 수립하여야 한다.",
- opts:["3","7","5","10"],ans:2,
- notes:[{l:"",ok:true,t:"종합계획은 5년마다 수립합니다. 연도별 시행계획은 종합계획에 따라 매년 수립·시행합니다."}],
- src:"제3조의2 ① 보건복지부장관은 이 법에 따른 건강보험(…)의 건전한 운영을 위하여 제4조에 따른 건강보험정책심의위원회(…)의 심의를 거쳐 5년마다 국민건강보험종합계획(…)을 수립하여야 한다.",
- trap:[{g:"숫자 바꾸기",t:"종합계획 5년, 시행계획 매년으로 주기를 섞어 내는 유형입니다."}]},
-
-{id:"c1-06",art:"제3조의2",type:"choice",amend:false,
- stem:"「국민건강보험법」 제3조의2(국민건강보험종합계획의 수립 등)에 관한 설명으로 옳지 않은 것은?",
- opts:["시행계획은 보건복지부장관이 건강보험정책심의위원회의 심의 없이 수립·시행한다.",
-       "보건복지부장관은 매년 시행계획에 따른 추진실적을 평가하여야 한다.",
-       "종합계획의 수립 및 변경이 있는 경우 보건복지부장관은 관련 보고서를 작성하여 지체 없이 국회 소관 상임위원회에 보고하여야 한다.",
-       "연도별 시행계획은 종합계획에 따라 매년 수립·시행한다."],
- ans:0,
- notes:[{l:"①",ok:false,t:"시행계획도 건강보험정책심의위원회의 심의를 거쳐 수립·시행해야 합니다."},
-        {l:"②",ok:true,t:"추진실적 평가는 매년 해야 합니다(‘하여야 한다’)."},
-        {l:"③",ok:true,t:"수립·변경, 시행계획 수립, 추진실적 평가 사유가 생기면 지체 없이 보고합니다."},
-        {l:"④",ok:true,t:"종합계획은 5년마다, 시행계획은 매년입니다."}],
- src:"③ 보건복지부장관은 종합계획에 따라 매년 연도별 시행계획(…)을 건강보험정책심의위원회의 심의를 거쳐 수립ㆍ시행하여야 한다.\n④ 보건복지부장관은 매년 시행계획에 따른 추진실적을 평가하여야 한다.\n⑤ 보건복지부장관은 다음 각 호의 사유가 발생한 경우 관련 사항에 대한 보고서를 작성하여 지체 없이 국회 소관 상임위원회에 보고하여야 한다.",
- trap:[{g:"예외·단서",t:"‘심의를 거쳐’라는 절차를 빼고 장관이 단독으로 하는 것처럼 바꾸는 유형입니다."}]},
-
-{id:"c1-07",art:"제3조의2",type:"box",amend:false,
- stem:"「국민건강보험법」 제3조의2에 관한 설명으로 옳은 것만을 모두 고르면?",
- box:[{k:"ㄱ",t:"보건복지부장관은 종합계획의 수립 등을 위하여 필요하다고 인정하는 경우 관계 기관의 장에게 자료의 제출을 요구할 수 있다."},
-      {k:"ㄴ",t:"자료의 제출을 요구받은 자는 특별한 사유가 없으면 이에 따라야 한다."},
-      {k:"ㄷ",t:"종합계획의 수립 및 변경에 관한 보고서는 매년 말에 국회 소관 상임위원회에 보고한다."},
-      {k:"ㄹ",t:"종합계획·시행계획의 수립 등에 필요한 사항은 보건복지부령으로 정한다."}],
- opts:["ㄱ, ㄷ","ㄴ, ㄷ","ㄱ, ㄴ","ㄱ, ㄹ"],ans:2,
- notes:[{l:"ㄱ",ok:true,t:"‘필요하다고 인정하는 경우 … 요구할 수 있다’입니다."},
-        {l:"ㄴ",ok:true,t:"특별한 사유가 없으면 따라야 합니다."},
-        {l:"ㄷ",ok:false,t:"‘지체 없이’ 보고합니다. 매년 말 정기 보고가 아닙니다."},
-        {l:"ㄹ",ok:false,t:"그 밖에 필요한 사항은 대통령령으로 정합니다."}],
- src:"⑥ (…)필요하다고 인정하는 경우 관계 기관의 장에게 자료의 제출을 요구할 수 있다. 이 경우 자료의 제출을 요구받은 자는 특별한 사유가 없으면 이에 따라야 한다.\n⑦ 그 밖에 (…) 필요한 사항은 대통령령으로 정한다.",
- trap:[{g:"숫자 바꾸기",t:"‘지체 없이’를 ‘매년 말’ 같은 구체적 시점으로 바꾸는 유형입니다."},
-       {g:"근거 법령 바꾸기",t:"대통령령을 보건복지부령으로 바꾸는 유형입니다. 위임 형식은 항상 확인하세요."}]},
-
-{id:"c1-08",art:"제3조의2 (개정)",type:"choice",amend:true,
- stem:"2027. 1. 1. 시행되는 개정 규정을 기준으로, 「국민건강보험법」 제3조의2제2항에 따라 종합계획에 포함되어야 하는 제5호의 사항은?\n(개정 전: “요양급여비용에 관한 사항”)",
- opts:["요양급여비용 및 공공정책급여비용에 관한 사항",
-       "요양급여비용에 관한 사항",
-       "요양급여비용 및 약제비용에 관한 사항",
-       "공공정책급여비용에 관한 사항"],
- ans:0,
- notes:[{l:"①",ok:true,t:"개정 후 제5호입니다."},
-        {l:"②",ok:false,t:"개정 전(현행) 내용입니다."},
-        {l:"③",ok:false,t:"약제비용은 조문에 없습니다."},
-        {l:"④",ok:false,t:"요양급여비용이 빠졌습니다. 요양급여비용에 공공정책급여비용이 ‘추가’됩니다."}],
- src:"[2027. 1. 1. 시행] 제3조의2 ② 5. 요양급여비용 및 공공정책급여비용에 관한 사항\n[현행] 5. 요양급여비용에 관한 사항",
- trap:[{g:"개정 비교",t:"시행일이 가까운 개정은 ‘현행 vs 개정 후’를 고르게 하는 형태로 나올 수 있습니다. 2026. 5. 26. 개정, 2027. 1. 1. 시행입니다."}]},
-
-{id:"c1-09",art:"제4조",type:"box",amend:false,
- stem:"「국민건강보험법」 제4조(건강보험정책심의위원회)에 관한 설명으로 옳은 것만을 모두 고르면?",
- box:[{k:"ㄱ",t:"건강보험정책심의위원회는 보건복지부장관 소속으로 둔다."},
-      {k:"ㄴ",t:"심의위원회는 위원장 1명과 부위원장 1명을 포함하여 25명의 위원으로 구성한다."},
-      {k:"ㄷ",t:"심의위원회의 위원장은 보건복지부장관이 된다."},
-      {k:"ㄹ",t:"심의위원회의 부위원장은 제4항제4호의 위원 중에서 위원장이 지명하는 사람이 된다."}],
- opts:["ㄱ, ㄴ","ㄱ, ㄴ, ㄹ","ㄴ, ㄷ, ㄹ","ㄱ, ㄷ, ㄹ"],ans:1,
- notes:[{l:"ㄱ",ok:true,t:"보건복지부장관 소속입니다."},
-        {l:"ㄴ",ok:true,t:"위원장·부위원장 포함 25명입니다."},
-        {l:"ㄷ",ok:false,t:"위원장은 보건복지부차관입니다."},
-        {l:"ㄹ",ok:true,t:"부위원장은 제4호 위원 중에서 위원장이 지명합니다."}],
- src:"① (…)보건복지부장관 소속으로 건강보험정책심의위원회(…)를 둔다.\n② 심의위원회는 위원장 1명과 부위원장 1명을 포함하여 25명의 위원으로 구성한다.\n③ 심의위원회의 위원장은 보건복지부차관이 되고, 부위원장은 제4항제4호의 위원 중에서 위원장이 지명하는 사람이 된다.",
- trap:[{g:"주체 바꾸기",t:"차관을 장관으로 바꾸는 가장 흔한 유형입니다. 장관 소속, 위원장은 차관으로 묶어 외우세요."}]},
-
-{id:"c1-10",art:"제4조",type:"choice",amend:false,
- stem:"「국민건강보험법」 제4조에 따른 건강보험정책심의위원회의 위원에 관한 설명으로 옳지 않은 것은?",
- opts:["위원은 보건복지부장관이 임명 또는 위촉한다.",
-       "의료계를 대표하는 단체 및 약업계를 대표하는 단체가 추천하는 위원은 각 8명이다.",
-       "근로자단체 및 사용자단체가 추천하는 위원은 각 2명이다.",
-       "위원(제4항제4호가목에 따른 위원은 제외)의 임기는 3년이며, 사임 등으로 새로 위촉된 위원의 임기는 전임위원 임기의 남은 기간이다."],
- ans:1,
- notes:[{l:"①",ok:true,t:"보건복지부장관이 임명 또는 위촉합니다."},
-        {l:"②",ok:false,t:"의료계·약업계 단체가 추천하는 위원은 ‘각’ 8명이 아니라 합하여 8명입니다."},
-        {l:"③",ok:true,t:"근로자단체 및 사용자단체가 추천하는 각 2명입니다."},
-        {l:"④",ok:true,t:"임기 3년, 보궐 위원은 전임자의 남은 기간입니다. 중앙행정기관 소속 공무원(가목)은 제외입니다."}],
- src:"④ 3. 의료계를 대표하는 단체 및 약업계를 대표하는 단체가 추천하는 8명\n⑤ 심의위원회 위원(제4항제4호가목에 따른 위원은 제외한다)의 임기는 3년으로 한다. 다만, 위원의 사임 등으로 새로 위촉된 위원의 임기는 전임위원 임기의 남은 기간으로 한다.",
- trap:[{g:"숫자 바꾸기",t:"‘각 1명’과 ‘합하여 8명’처럼 ‘각’의 유무를 바꾸는 유형입니다. 문장 속 ‘각’을 꼭 확인하세요."}]},
-
-{id:"c1-11",art:"제4조 (개정)",type:"choice",amend:true,
- stem:"2027. 1. 1. 시행되는 개정 규정에 따라 건강보험정책심의위원회의 심의·의결 사항(제4조제1항)에 새로 포함되는 것은?",
- opts:["요양급여내역 확인시스템의 구축·운영에 관한 사항",
-       "재정운영위원회 위원의 구성에 관한 사항",
-       "제49조의2에 따른 공공정책급여의 기준 및 공공정책급여비용에 관한 사항",
-       "보험료 감면 대상의 범위에 관한 사항"],
- ans:2,
- notes:[{l:"①",ok:false,t:"요양급여내역 확인시스템은 제41조의6(2026. 12. 24. 시행)의 내용이고, 제4조의 심의사항이 아닙니다."},
-        {l:"②",ok:false,t:"제4조 심의사항에 없습니다."},
-        {l:"③",ok:true,t:"제4조제1항제3호의2로 신설됩니다. 같은 항 제3호에는 제47조의3도 추가됩니다."},
-        {l:"④",ok:false,t:"제4조 심의사항에 없습니다."}],
- src:"[2027. 1. 1. 시행] 제4조 ① 3. 제45조제3항, 제46조 및 제47조의3에 따른 요양급여비용에 관한 사항\n3의2. 제49조의2에 따른 공공정책급여의 기준 및 공공정책급여비용에 관한 사항",
- trap:[{g:"개정 비교",t:"새로 생기는 호·목을 고르게 하는 유형입니다. 제3조의2, 제4조, 제33조 등이 2027. 1. 1.에 함께 바뀝니다."}]}
-];
-
-var TYPE = {box:"보기형",choice:"선택형",ox:"OX",blank:"빈칸"};
-var CIRC = ["①","②","③","④"];
-var CHAPTERS = [["제1장 총칙",11],["제2장 가입자",0],["제3장 국민건강보험공단",0],["제4장 보험급여",0],["제5장 건강보험심사평가원",0],["제6장 보험료",0],["제7장 이의신청 및 심판청구 등",0],["제8장 보칙",0],["제9장 벌칙",0]];
+/* ===== 데이터: 제1장은 data1.js(보기형 포함), 제2~9장은 data.js(암기 확인용) ===== */
+var Q=(window.Q1||[]).concat(window.QL||[]);
+Q.forEach(function(q){if(!q.ch)q.ch=1});
+var TYPE={box:"보기형",choice:"선택형",ox:"OX",blank:"빈칸"};
+var CIRC=["①","②","③","④"];
+var CHN={1:"총칙",2:"가입자",3:"국민건강보험공단",4:"보험급여",5:"건강보험심사평가원",6:"보험료",7:"이의신청 및 심판청구 등",8:"보칙",9:"벌칙"};
 
 /* ===== 저장소 (이 기기·브라우저에만 저장) ===== */
-var store={wrong:{},log:[]};
-function loadStore(){try{var s=localStorage.getItem("nhi-quiz-v1");if(s){var o=JSON.parse(s);store.wrong=o.wrong||{};store.log=o.log||[]}}catch(e){}}
+var store={wrong:{},log:[],stat:{},pref:{}};
+function loadStore(){try{var s=localStorage.getItem("nhi-quiz-v1");if(s){var o=JSON.parse(s);store.wrong=o.wrong||{};store.log=o.log||[];store.stat=o.stat||{};store.pref=o.pref||{}}}catch(e){}}
 function saveStore(){try{localStorage.setItem("nhi-quiz-v1",JSON.stringify(store))}catch(e){}}
 
 /* ===== 상태 ===== */
-var S={view:"home",filter:"all",mode:"normal",list:[],i:0,sel:null,done:false,res:[],confirmClear:false};
+var S={view:"home",filter:"all",size:10,amend:false,chs:{},mode:"normal",list:[],i:0,sel:null,done:false,res:[],confirmClear:false};
 var $app=document.getElementById("app"),$dock=document.getElementById("dock"),$dockInner=document.getElementById("dockInner");
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function byId(id){for(var k=0;k<Q.length;k++)if(Q[k].id===id)return Q[k]}
 function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
 function wrongIds(){return Object.keys(store.wrong).filter(function(id){return byId(id)})}
+function counts(){var c={};Q.forEach(function(q){c[q.ch]=(c[q.ch]||0)+1});return c}
+function tagsOf(q){return q.trap?q.trap.map(function(t){return t.g}):[q.tag]}
 function showDock(html){$dock.hidden=false;$dockInner.innerHTML=html}
 function hideDock(){$dock.hidden=true;$dockInner.innerHTML=""}
 function go(v){S.view=v;render();window.scrollTo(0,0)}
+function savePref(){store.pref={filter:S.filter,size:S.size,amend:S.amend,chs:S.chs};saveStore()}
+function initPref(){
+  var p=store.pref,c=counts();S.filter=p.filter||"all";S.size=p.size===undefined?10:p.size;S.amend=!!p.amend;S.chs={};
+  Object.keys(c).forEach(function(k){S.chs[k]=p.chs&&p.chs[k]!==undefined?p.chs[k]:true});
+}
+function pool(){
+  return Q.filter(function(q){return S.chs[q.ch]&&(S.filter==="all"||q.type===S.filter)&&(!S.amend||q.amend)});
+}
 
 function start(mode){
-  var pool=Q.slice();
-  if(mode==="wrong"){var w=wrongIds();pool=Q.filter(function(q){return w.indexOf(q.id)>-1})}
-  else if(S.filter!=="all"){pool=pool.filter(function(q){return q.type===S.filter})}
-  if(!pool.length)return;
-  S.mode=mode;S.list=shuffle(pool);S.i=0;S.sel=null;S.done=false;S.res=[];
+  var p;
+  if(mode==="wrong"){var w=wrongIds();p=Q.filter(function(q){return w.indexOf(q.id)>-1})}
+  else{p=pool()}
+  if(!p.length)return;
+  p=shuffle(p);if(mode!=="wrong"&&S.size>0)p=p.slice(0,S.size);
+  S.mode=mode;S.list=p;S.i=0;S.sel=null;S.done=false;S.res=[];
   go("quiz");
 }
 function check(){
   var q=S.list[S.i],ok=S.sel===q.ans;S.done=true;S.res[S.i]={id:q.id,ok:ok};
   if(ok){delete store.wrong[q.id]}else{var w=store.wrong[q.id]||{n:0};w.n++;w.t=Date.now();store.wrong[q.id]=w}
+  var st=store.stat[q.ch]||{c:0,n:0};st.n++;if(ok)st.c++;store.stat[q.ch]=st;
   saveStore();render();
+  var e=document.getElementById("fb");if(e&&e.scrollIntoView)e.scrollIntoView({block:"nearest"});
 }
 function next(){
   if(S.i<S.list.length-1){S.i++;S.sel=null;S.done=false;render();window.scrollTo(0,0)}
@@ -283,7 +167,8 @@ function next(){
   }
 }
 
-/* ===== 화면 ===== */
+/* ===== 화면 조각 ===== */
+function boxHtml(q){return q.box?'<div class="box">'+q.box.map(function(b){return '<div><b>'+b.k+'.</b><span>'+esc(b.t)+'</span></div>'}).join("")+'</div>':''}
 function noteList(q){
   return '<ul class="notes">'+q.notes.map(function(n){
     return '<li><span class="l">'+esc(n.l)+'</span><span class="tag '+(n.ok?'t':'f')+'">'+(n.ok?'옳은 내용':'틀린 내용')+'</span><span>'+esc(n.t)+'</span></li>'
@@ -291,6 +176,10 @@ function noteList(q){
 }
 function answerText(q){return q.type==="box"||q.type==="ox"?q.opts[q.ans]:CIRC[q.ans]+" "+q.opts[q.ans]}
 function explain(q){
+  if(!q.notes){
+    return '<div class="card lite"><p>'+esc(q.exp)+'</p><div class="quote">'+esc(q.src)+'</div>'
+     +'<div class="row"><span class="chip trap">'+esc(q.tag)+'</span><span class="muted">'+esc(q.art)+(q.amend?' · 시행예정 기준':'')+'</span></div></div>';
+  }
   return '<div class="card" style="gap:14px">'
    +'<div><b>해설</b></div>'+noteList(q)
    +'<div><div class="muted" style="margin-bottom:6px">근거 조문 (시행예정 반영본)</div><div class="quote">'+esc(q.src)+'</div></div>'
@@ -298,23 +187,36 @@ function explain(q){
    +q.trap.map(function(t){return '<p style="margin-bottom:6px"><span class="chip trap">'+esc(t.g)+'</span> '+esc(t.t)+'</p>'}).join("")+'</div></div>';
 }
 
+/* ===== 화면 ===== */
 function renderHome(){
-  hideDock();
-  var w=wrongIds().length,last=store.log.length?store.log[store.log.length-1]:null;
-  var filt=[["all","전체"],["box","보기형"],["choice","선택형"],["ox","OX"],["blank","빈칸"]];
+  var c=counts(),w=wrongIds().length,last=store.log.length?store.log[store.log.length-1]:null,p=pool().length;
+  var filt=[["all","전체"],["ox","OX"],["blank","빈칸"],["choice","선택형"],["box","보기형"]];
+  var sizes=[[10,"10문제"],[20,"20문제"],[0,"전체"]];
+  var shown=S.size>0?Math.min(S.size,p):p;
+  var n=Object.keys(CHN);
   $app.innerHTML=
    '<header class="card" style="gap:8px"><h1>국민건강보험법 퀴즈</h1>'
-   +'<p class="muted">기준 법령: 제21522호(2026. 10. 8. 시행)에 시행예정 개정(2026. 11. 27. / 12. 24. / 2027. 1. 1.)을 반영했습니다. 시행령·시행규칙은 제외입니다.</p>'
+   +'<p class="muted">기준 법령: 제21522호(2026. 10. 8. 시행) + 시행예정 개정(2026. 11. 27. / 12. 24. / 2027. 1. 1.) 반영. 시행령·시행규칙 제외.</p>'
    +(last?'<p class="muted">최근 기록: '+last.c+' / '+last.n+'문제 정답</p>':'')+'</header>'
+   +'<section class="card"><h2>범위 선택</h2><div class="chlist">'
+   +n.map(function(k){var cnt=c[k]||0,st=store.stat[k];
+     var sub=cnt?cnt+'문제'+(st&&st.n?' · 정답률 '+Math.round(st.c/st.n*100)+'% ('+st.n+'회 풀이)':''):'준비 중';
+     return '<button class="chrow" data-ch="'+k+'" aria-pressed="'+(!!S.chs[k])+'"'+(cnt?'':' disabled')+'><span class="ck">'+(S.chs[k]?'✓':'')+'</span><span class="grow">제'+k+'장 '+esc(CHN[k])+'<div class="sub">'+sub+'</div></span></button>'}).join("")
+   +'</div><div class="row"><button class="btn small" id="allOn">전체 선택</button><button class="btn small" id="allOff">전체 해제</button></div></section>'
    +'<section class="card"><h2>문제 유형</h2><div class="filters" role="group" aria-label="문제 유형">'
-   +filt.map(function(f){return '<button data-f="'+f[0]+'" aria-pressed="'+(S.filter===f[0])+'">'+f[1]+'</button>'}).join("")+'</div></section>'
-   +'<section class="card"><h2>장 선택</h2><div>'
-   +CHAPTERS.map(function(c){return '<div class="chap'+(c[1]?'':' off')+'"><span>'+c[0]+'</span><span class="muted">'+(c[1]?c[1]+'문제':'준비 중')+'</span></div>'}).join("")
-   +'</div></section>'
+   +filt.map(function(f){return '<button data-f="'+f[0]+'" aria-pressed="'+(S.filter===f[0])+'">'+f[1]+'</button>'}).join("")+'</div>'
+   +'<h2 style="margin-top:4px">문제 수</h2><div class="filters" role="group" aria-label="문제 수">'
+   +sizes.map(function(f){return '<button data-s="'+f[0]+'" aria-pressed="'+(S.size===f[0])+'">'+f[1]+'</button>'}).join("")+'</div>'
+   +'<h2 style="margin-top:4px">개정 조문</h2><div class="filters"><button id="amendBtn" aria-pressed="'+S.amend+'">시행예정 개정 조문만 풀기</button></div></section>'
    +'<section class="card"><h2>오답노트</h2><p class="muted">틀린 문제는 자동으로 쌓이고, 다시 맞히면 빠집니다. 이 기기의 브라우저에만 저장됩니다.</p>'
    +'<div class="row"><button class="btn small" id="goWrong">오답노트 보기 ('+w+')</button></div></section>';
-  showDock('<button class="btn primary" id="startBtn">제1장 총칙 풀기</button>');
-  $app.querySelectorAll("[data-f]").forEach(function(b){b.onclick=function(){S.filter=b.dataset.f;renderHome()}});
+  showDock('<button class="btn primary" id="startBtn"'+(p?'':' disabled')+'>'+(p?shown+'문제 풀기':'조건에 맞는 문제가 없어요')+'</button>');
+  $app.querySelectorAll("[data-ch]").forEach(function(b){b.onclick=function(){S.chs[b.dataset.ch]=!S.chs[b.dataset.ch];savePref();renderHome()}});
+  $app.querySelectorAll("[data-f]").forEach(function(b){b.onclick=function(){S.filter=b.dataset.f;savePref();renderHome()}});
+  $app.querySelectorAll("[data-s]").forEach(function(b){b.onclick=function(){S.size=+b.dataset.s;savePref();renderHome()}});
+  document.getElementById("amendBtn").onclick=function(){S.amend=!S.amend;savePref();renderHome()};
+  document.getElementById("allOn").onclick=function(){Object.keys(c).forEach(function(k){S.chs[k]=true});savePref();renderHome()};
+  document.getElementById("allOff").onclick=function(){Object.keys(c).forEach(function(k){S.chs[k]=false});savePref();renderHome()};
   document.getElementById("startBtn").onclick=function(){start("normal")};
   document.getElementById("goWrong").onclick=function(){go("wrong")};
 }
@@ -323,10 +225,9 @@ function renderQuiz(){
   var q=S.list[S.i],pct=Math.round((S.i+(S.done?1:0))/S.list.length*100);
   var h='<div class="top"><button class="link" id="quit" style="padding:0">← 나가기</button><span class="muted">'+(S.i+1)+' / '+S.list.length+'</span></div>'
    +'<div class="bar" aria-hidden="true"><i style="width:'+pct+'%"></i></div>'
-   +'<section class="card"><div class="row"><span class="chip">'+esc(q.art)+'</span><span class="chip plain">'+TYPE[q.type]+'</span>'+(q.amend?'<span class="chip amend">개정 반영</span>':'')+'</div>'
-   +'<p class="stem">'+esc(q.stem)+'</p>';
-  if(q.box){h+='<div class="box">'+q.box.map(function(b){return '<div><b>'+b.k+'.</b><span>'+esc(b.t)+'</span></div>'}).join("")+'</div>'}
-  h+='<div class="opts">'+q.opts.map(function(o,k){
+   +'<section class="card"><div class="row"><span class="chip">제'+q.ch+'장 · '+esc(q.art)+'</span><span class="chip plain">'+TYPE[q.type]+'</span>'+(q.amend?'<span class="chip amend">개정 반영</span>':'')+'</div>'
+   +'<p class="stem">'+esc(q.stem)+'</p>'+boxHtml(q)
+   +'<div class="opts">'+q.opts.map(function(o,k){
     var cls="opt",pressed=S.sel===k;
     if(S.done){if(k===q.ans)cls+=" ok";else if(k===S.sel)cls+=" bad"}
     var lead=q.type==="ox"?"":'<span class="n">'+CIRC[k]+'</span>';
@@ -334,26 +235,30 @@ function renderQuiz(){
   }).join("")+'</div></section>';
   if(S.done){
     var ok=S.sel===q.ans;
-    h+='<div class="verdict '+(ok?'ok':'bad')+'">'+(ok?'정답입니다':'오답입니다 · 정답: '+esc(answerText(q)))+'</div>'+explain(q);
+    h+='<div id="fb"><div class="verdict '+(ok?'ok':'bad')+'" style="margin-bottom:12px">'+(ok?'정답입니다':'오답입니다 · 정답: '+esc(answerText(q)))+'</div>'+explain(q)+'</div>';
   }
   $app.innerHTML=h;
-  $app.querySelectorAll(".opt").forEach(function(b){b.onclick=function(){if(S.done)return;S.sel=+b.dataset.k;renderQuiz()}});
+  $app.querySelectorAll(".opt").forEach(function(b){b.onclick=function(){
+    if(S.done)return;S.sel=+b.dataset.k;
+    if(q.type==="box")renderQuiz();else check();
+  }});
   document.getElementById("quit").onclick=function(){go("home")};
-  if(!S.done)showDock('<button class="btn primary" id="act"'+(S.sel===null?' disabled':'')+'>정답 확인</button>');
-  else showDock('<button class="btn primary" id="act">'+(S.i<S.list.length-1?'다음 문제':'결과 보기')+'</button>');
-  document.getElementById("act").onclick=S.done?next:check;
+  if(S.done)showDock('<button class="btn primary" id="act">'+(S.i<S.list.length-1?'다음 문제':'결과 보기')+'</button>');
+  else if(q.type==="box")showDock('<button class="btn primary" id="act"'+(S.sel===null?' disabled':'')+'>정답 확인</button>');
+  else hideDock();
+  var a=document.getElementById("act");if(a)a.onclick=S.done?next:check;
 }
 
 function renderResult(){
   var c=S.res.filter(function(r){return r&&r.ok}).length,n=S.list.length,wrong=S.res.filter(function(r){return r&&!r.ok});
-  var tags={};wrong.forEach(function(r){byId(r.id).trap.forEach(function(t){tags[t.g]=(tags[t.g]||0)+1})});
+  var tags={};wrong.forEach(function(r){tagsOf(byId(r.id)).forEach(function(t){tags[t]=(tags[t]||0)+1})});
   var tagHtml=Object.keys(tags).map(function(k){return '<span class="chip trap">'+esc(k)+' '+tags[k]+'</span>'}).join(" ");
   $app.innerHTML=
    '<section class="card"><p class="muted">결과</p><div class="score">'+c+' / '+n+'</div>'
-   +(wrong.length?'<div><p class="muted" style="margin-bottom:6px">많이 틀린 함정 유형</p><div class="row">'+tagHtml+'</div></div>':'<p>모두 맞혔습니다.</p>')+'</section>'
+   +(wrong.length?'<div><p class="muted" style="margin-bottom:6px">많이 틀린 유형</p><div class="row">'+tagHtml+'</div></div>':'<p>모두 맞혔습니다.</p>')+'</section>'
    +'<section class="card"><h2>문항별 결과</h2><div>'
    +S.list.map(function(q,k){var r=S.res[k]||{ok:false};
-     return '<div class="res"><span class="m '+(r.ok?'ok':'bad')+'">'+(r.ok?'○':'×')+'</span><span><b>'+esc(q.art)+'</b> · '+esc(q.stem.split("\n")[0])+'</span></div>'}).join("")
+     return '<div class="res"><span class="m '+(r.ok?'ok':'bad')+'">'+(r.ok?'○':'×')+'</span><span><b>제'+q.ch+'장 '+esc(q.art)+'</b> · '+esc(q.stem.split("\n")[0])+'</span></div>'}).join("")
    +'</div></section>';
   var w=wrongIds().length;
   showDock((w?'<button class="btn" id="rw">오답 다시 풀기 ('+w+')</button>':'')+'<button class="btn primary" id="again">처음으로</button>');
@@ -367,10 +272,9 @@ function renderWrong(){
   if(!ids.length){h+='<section class="card"><p>아직 틀린 문제가 없습니다. 문제를 풀면 틀린 문제가 여기에 쌓입니다.</p></section>'}
   else{
     h+='<section class="card" style="padding-block:4px">'+ids.map(function(id){var q=byId(id);
-      return '<details><summary><span class="chip">'+esc(q.art)+'</span><span class="chip plain">'+TYPE[q.type]+'</span><span class="muted">'+store.wrong[id].n+'회 오답</span></summary><div class="inner">'
-       +'<p class="stem">'+esc(q.stem)+'</p>'
-       +(q.box?'<div class="box">'+q.box.map(function(b){return '<div><b>'+b.k+'.</b><span>'+esc(b.t)+'</span></div>'}).join("")+'</div>':'')
-       +'<p><b>정답:</b> '+esc(answerText(q))+'</p>'+noteList(q)
+      return '<details><summary><span class="chip">제'+q.ch+'장 · '+esc(q.art)+'</span><span class="chip plain">'+TYPE[q.type]+'</span><span class="muted">'+store.wrong[id].n+'회 오답</span></summary><div class="inner">'
+       +'<p class="stem">'+esc(q.stem)+'</p>'+boxHtml(q)
+       +'<p><b>정답:</b> '+esc(answerText(q))+'</p>'+(q.notes?noteList(q):'<p>'+esc(q.exp)+'</p>')
        +'<div class="quote">'+esc(q.src)+'</div></div></details>'}).join("")+'</section>';
     h+='<section class="card"><button class="btn small danger" id="clr">'+(S.confirmClear?'정말 비울까요? 한 번 더 누르면 삭제':'오답노트 비우기')+'</button></section>';
   }
@@ -388,7 +292,7 @@ function render(){
   else if(S.view==="result")renderResult();
   else renderWrong();
 }
-loadStore();render();
+loadStore();initPref();render();
 </script>
 </body>
 </html>
